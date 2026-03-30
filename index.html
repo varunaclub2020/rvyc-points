@@ -2,26 +2,26 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>RVYC Member Points</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RVYC Member Points Checker</title>
 </head>
-<body style="font-family: Arial; text-align:center; margin-top:50px;">
+<body style="font-family: Arial, sans-serif; text-align:center; padding:40px;">
+  <h1>Royal Varuna Yacht Club</h1>
+  <h2>Member Points Checker</h2>
 
-<h1>Royal Varuna Yacht Club</h1>
-<h2>Member Points Checker</h2>
+  <input id="code" placeholder="Enter Membership Code" style="padding:10px; width:260px;">
+  <br><br>
+  <button onclick="checkMember()" style="padding:10px 20px;">Check Points</button>
 
-<input id="code" placeholder="Enter Membership Code" style="padding:10px; width:250px;">
-<br><br>
+  <div id="result" style="margin-top:20px; font-size:18px;"></div>
 
-<button onclick="check()" style="padding:10px 20px;">Check Points</button>
-
-<h3 id="result"></h3>
-
-<script>
-function check() {
-  let code = document.getElementById("code").value;
-  document.getElementById("result").innerHTML = "Searching for " + code;
-}
-</script>
-
+  <script>
+    function checkMember() {
+      const code = document.getElementById('code').value.trim();
+      document.getElementById('result').innerText = code
+        ? 'Searching for: ' + code
+        : 'Please enter Membership Code';
+    }
+  </script>
 </body>
 </html>
