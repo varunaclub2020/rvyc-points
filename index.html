@@ -1,1 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>RVYC Member Points</title>
+</head>
+<body style="font-family: Arial; text-align:center; margin-top:50px;">
 
+<h1>Royal Varuna Yacht Club</h1>
+<h2>Member Points Checker</h2>
+
+<input id="code" placeholder="Enter Membership Code" style="padding:10px; width:250px;">
+<br><br>
+
+<button onclick="check()" style="padding:10px 20px;">Check Points</button>
+
+<h3 id="result"></h3>
+
+<script>
+function check() {
+  let code = document.getElementById("code").value;
+  document.getElementById("result").innerHTML = "Searching for " + code;
+}
+</script>
+
+</body>
+</html>
