@@ -240,19 +240,6 @@
       color: #5e6a75;
       font-size: 13px;
     }
-
-    @media (max-width: 640px) {
-      .card { padding: 18px 14px; }
-      .grid { grid-template-columns: 1fr; }
-      .item.full { grid-column: auto; }
-      h1 { font-size: 24px; }
-      .sub { font-size: 14px; }
-      .value { font-size: 22px; }
-      .value.name-text, .value.code-text { font-size: 17px; }
-      .value.medal-big { font-size: 30px; }
-      th, td { font-size: 12px; padding: 9px 6px; }
-      .medal-cell { font-size: 20px; }
-    }
   </style>
 </head>
 <body>
@@ -325,7 +312,7 @@
 
   <script>
     const SHEET_JSON_URL =
-      "https://docs.google.com/spreadsheets/d/1e0__t3KIwv3zWKzlJLCDCEirjkB_BBLN_62lHCZyKnw/gviz/tq?tqx=out:json";
+      "https://docs.google.com/spreadsheets/d/1e0__t3KIwv3zWKzlJLCDCEirjkB_BBLN_62lHCZyKnw/gviz/tq?tqx=out:json&sheet=Top%20Members";
 
     let MEMBER_DATA = [];
     let TOP5_DATA = [];
@@ -337,18 +324,6 @@
       if (type === 'error') message.classList.add('error');
       if (type === 'loading') message.classList.add('loading');
       message.textContent = text || '';
-    }
-
-    function normalizeHeader(value) {
-      return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
-    }
-
-    function findColumnIndex(headers, possibleNames) {
-      const normalized = headers.map(normalizeHeader);
-      for (let i = 0; i < normalized.length; i++) {
-        if (possibleNames.includes(normalized[i])) return i;
-      }
-      return -1;
     }
 
     function safe(value) {
@@ -430,28 +405,21 @@
 
         const res = await fetch(SHEET_JSON_URL);
         const text = await res.text();
-
         const jsonText = text.substring(47, text.length - 2);
         const data = JSON.parse(jsonText);
 
-        const cols = data.table.cols.map(c => c.label || '');
-        const rows = data.table.rows.map(r => (r.c || []).map(cell => cell ? (cell.f || cell.v || '') : ''));
+        const rows = data.table.rows.map(r => {
+          const cells = r.c || [];
+          return {
+            membershipCode: cells[0] ? (cells[0].f || cells[0].v || '') : '',
+            memberName: cells[1] ? (cells[1].f || cells[1].v || '-') : '-',
+            point: cells[3] ? (cells[3].f || cells[3].v || 0) : 0,
+            rank: cells[5] ? (cells[5].f || cells[5].v || '') : '',
+            medal: cells[6] ? (cells[6].f || cells[6].v || '') : ''
+          };
+        });
 
-        const indexMembershipCode = findColumnIndex(cols, ['membership code', 'member code', 'code']);
-        const indexMemberName = findColumnIndex(cols, ['member name', 'name']);
-        const indexPoint = findColumnIndex(cols, ['point', 'points']);
-        const indexRank = findColumnIndex(cols, ['rank']);
-        const indexMedal = findColumnIndex(cols, ['medal']);
-
-        MEMBER_DATA = rows
-          .filter(row => row[indexMembershipCode])
-          .map(row => ({
-            membershipCode: row[indexMembershipCode] || '',
-            memberName: row[indexMemberName] || '-',
-            point: row[indexPoint] || 0,
-            rank: row[indexRank] || '',
-            medal: row[indexMedal] || ''
-          }));
+        MEMBER_DATA = rows.filter(r => r.membershipCode);
 
         TOP5_DATA = [...MEMBER_DATA]
           .sort((a, b) => (Number(a.rank) || 999999) - (Number(b.rank) || 999999))
