@@ -366,6 +366,17 @@
       }
     }
 
+    function getMedalByRank(rank) {
+  rank = Number(rank);
+
+  if (rank === 1) return '🥇';
+  if (rank === 2) return '🥈';
+  if (rank === 3) return '🥉';
+  if (rank === 4) return '🏅';
+  if (rank === 5) return '🎖️';
+
+  return rank || '';
+}
     async function loadSheetData() {
       try {
         setMessage('Loading member data...', 'loading');
@@ -387,7 +398,7 @@
             memberName: cellValue(c[1], '-'),
             point: cellValue(c[2], 0),
             rank: cellValue(c[3], ''),
-            medal: cellValue(c[4], '')
+            medal: getMedalByRank(cellValue(c[3], ''))
           };
         });
 
